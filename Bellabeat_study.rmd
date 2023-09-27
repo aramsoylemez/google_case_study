@@ -1,0 +1,9 @@
+---
+author: Aram Soylemez
+title: "Bellabeat Case Study"
+output: html_document
+date: now
+---
+
+## Ask
+
