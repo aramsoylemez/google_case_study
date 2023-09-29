@@ -1,0 +1,160 @@
+## 1.Summary
+
+Bellabeat is high-tech company which produces smart products for health tracking use for women. They have different types of devices such as smart watches, smart bottles and so on which through the company aims to easen the burden of the daily life by tracking real life data.
+
+For this analysis we are going to focus on one of the companies products which is Bellabeat App. This app gathers data from Bellabeat products and have a great potential to improve the users experience of everyday life.
+
+## 2. Asking Phase 
+
+We are using third part data to identify the trends in similar use of smart devices.
+
+## 3. Preparing Phase
+
+#### 3.1. About Data 
+
+We are using FitBit Fitness Tracker Data. The data is stored on Kaggle and provided by Mobius. It is provided by the owner of the data to the public use without any demands. The dataset is created by Amazon Mechanical Turk between 03.12.2016-05.12.2016. Thirty user has consented to share their data with public.
+
+#### 3.2. Limitations
+
+The dataset that we are using consists of 18 CSV file which covers 30 users daily and hourly activities over two months. As the dataset only covers 30 users data it might have sampling bias, some tables such as the one on weight data only contains 8 users data. Therefore we can conclude that some of the tables are not very helpful in a strong analysis process. Laslty, the data was collected only in between two months which is also can be considered as quite limited.
+
+## 4. Processing Phase
+
+For all the steps in this procejt I used R, both for data analysis and for data visualisation.
+
+#### 4.1 Pacgages Used
+
+For this project beside the base pachage I used these packages:
+
+* tidyverse
+* lubridate
+* janitor
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+```
+#### 4.2. Importing Tables
+
+Since weight and heartrate tables do not cover the majority of the users I have chosen to work over only the tables covering calorie, step, activity and sleep data.
+
+```{r}
+daily_calorie <- read_csv("~/Desktop/google_case_study/Fitabase Data 4.12.16-5.12.16/dailyCalories_merged.csv")
+daily_activity <- read_csv("~/Desktop/google_case_study/Fitabase Data 4.12.16-5.12.16/dailyActivity_merged.csv")
+daily_step <- read_csv("~/Desktop/google_case_study/Fitabase Data 4.12.16-5.12.16/dailySteps_merged.csv")
+daily_sleep <- read_csv("~/Desktop/google_case_study/Fitabase Data 4.12.16-5.12.16/sleepDay_merged.csv")
+```
+
+#### 4.3. Previewing The Data Sets
+
+First we should check the data set and skimm the simple summary of each table.
+
+```{r}
+head(daily_activity)
+str(daily_activity)
+
+head(daily_calorie)
+str(daily_calorie)
+
+head(daily_sleep)
+str(daily_sleep)
+
+head(daily_step)
+str(daily_step) 
+```
+#### 4.4. Data Wrangling
+
+For this step I inspected the data thoroughly and checked for duplicates, data types, missing datas, date data, number of users. Then I re-adjusted the column names.
+
+##### 4.4.1. Number of Users
+
+Before proceeding for the rest of the analysis we should check the number of users we have in our data because in the end we are going to merge the entire four table for the rest of the analysis.
+
+```{r}
+n_distinct(daily_activity$Id)
+n_distinct(daily_sleep$Id)
+n_distinct(daily_step$Id)
+n_distinct(daily_calorie$Id)
+```
+As it is seen except for the sleep data we have 33 distinct users.
+
+##### 4.4.2. Duplicate and N/A Data Points
+
+In order to have valid results to a certain degree we must delete the duplicate points. Missing data can be handeled within big datasets, however, since we have small dataset we should avoid using it as well.
+
+```{r}
+sum(duplicated(daily_activity))
+sum(duplicated(daily_calorie))
+sum(duplicated(daily_step))
+sum(duplicated(daily_sleep))
+```
+It looks like we only have 3 duplicates in sleep table. As we are going to remove all the duplicates and missing data we can write a simple function to do all these for us.
+```{r}
+data_fixer <- function(data) {
+  # remove the missing data
+  data <- na.omit(data)
+  
+  # remove the duplicates
+  data <- distinct(data)
+  
+  return(data)
+}
+
+data_fixer(daily_sleep)
+data_fixer(daily_activity)
+data_fixer(daily_step)
+data_fixer(daily_calorie)
+
+```
+##### 4.4.3. Cleaning Names and Rename Columns
+
+For the sake of the analysis we should standardize the names and the columns so the for the analysis phase we can increase the comfort.
+
+As we are going to apply the same process for all the tables we can write another function to ease and fasten our job.
+```{r}
+data_renamer <- function(data) {
+  
+  # Cleaning Names
+  clean_names(data)
+  
+  # Renaming Columns
+  data <- rename_with(data, tolower)
+  
+  return(data)
+}
+
+data_renamer(daily_activity)
+data_renamer(daily_calorie)
+data_renamer(daily_sleep)
+data_renamer(daily_step)
+```
+##### 4.4.4. Consistency of Time Frame
+
+We are going to merge all the data based on both Id and Time data therefore we require our data to be consistent in both cases.
+
+We can again write a function to secure the consistency of our data.
+```{r}
+
+  #As Sleep table includes hours and seconds which we do not need for this analysis we should fix it first.
+daily_sleep$SleepDay <- substr(daily_sleep$SleepDay, 1, regexpr(" ", daily_sleep$SleepDay) - 1)
+
+date_cons <- function(data) {
+  
+  # All the time data is stored in the second column. The name of the second column
+  col_name <- colnames(data)[2]
+  
+  # Rename and Mutate the Time Data
+  data <- data %>% 
+    rename(date = col_name) %>% 
+    mutate(date = as_date(date, format = "%m/%d/%Y"))
+}
+
+date_cons(daily_activity)
+date_cons(daily_calorie)
+date_cons(daily_sleep)
+date_cons(daily_step)
+```
+
+
+

@@ -15,4 +15,4 @@ The data is available through Mobius, downloaded from Kaggle. It consists the da
 
 ## Prepare
 
-I have downloaded the data to my local computer and created a GitHub repo so that I can keep the workflow backed up. 
+I have downloaded the data to my local computer and created a GitHub repo so that I can keep the workflow backed up. The data is quite short in data. There are so many missing data.
