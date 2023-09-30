@@ -177,5 +177,174 @@ We will conduct the analysis of the tables to determine the trends and decide if
 
 #### 5.1. Seperating the Users into Groups by Their Activity Level
 
-Since the demographic data which could have been useful during the analysis is not reachable we neet a standing point for the rest of the analysis
+Since the demographic data which could have been useful during the analysis is not reachable we need a standing point for the rest of the analysis. For that we can use the number of steps taken every day.
+
+
+    *Sedentary - Less than 5000 steps a day.
+    *Lightly active - Between 5000 and 7499 steps a day.
+    *Fairly active - Between 7500 and 9999 steps a day.
+    *Very active - More than 10000 steps a day.
+
+This classification was made based on the article on this [link](https://www.10000steps.org.au/articles/counting-steps/). 
+
+Following this we need the daily avarage of each users:
+```{r}
+avarage_steps <- fitbit_merged %>% 
+  group_by(id) %>% 
+  summarize(avg_steps = mean(totalsteps), avg_calories = mean(calories), avg_sleep_hr = mean(totalminutesasleep/60))
+
+head(avarage_steps)
+```
+Based on this table now we can classify our users:
+
+```{r}
+user_class <- avarage_steps %>% 
+  mutate(type = case_when(
+    avg_steps < 5000 ~ "sedantary",
+    avg_steps >= 5000 & avg_steps <= 7499 ~ "lightly active",
+    avg_steps >- 7500 & avg_steps <= 9999 ~ "fairly active",
+    avg_steps >= 10000 ~ "very active"
+  ))
+
+head(user_class)
+```
+We can easily show the percentage of each user type with a simple data visualisation in a pie chart. First lets calculate the percentage of each user type and save it within a table.
+
+```{r}
+user_class_p <- user_class %>% 
+  group_by(type) %>% 
+  summarise(total = n()) %>% 
+  mutate(percentage = ceiling((total / sum(total))*100))
+
+head(user_class_p)
+```
+
+As you can see the users are distributed by their activities. the total percentage makes up to it is because we ceiled the percentages to make working with them easier. The data shows that there is a relationship between the usage of the app and the type of users. *Devices are more popular among fairly active users.*
+
+We can see this by creating a pie chart:
+```{r}
+user_class_p %>% 
+  ggplot(mapping = aes(x="", y = percentage, fill = type)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") + # This converts the bar chart to a pie chart
+  labs(title = "Distribution of User Type", fill = "Types") +
+  theme_minimal() +
+  theme(axis.title.x= element_blank(),
+        axis.title.y = element_blank(),
+        panel.border = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        plot.title = element_text(hjust = 0.5, size=14, face = "bold")) +
+  geom_text(aes(label = paste0(percentage,"%")),
+            position = position_stack(vjust = 0.5))
+ggsave(filename = paste0("~/Desktop/google_case_study/visuals/", "dist_of_users.png"))
+```
+
+#### 5.2. Sleeping and Stepping Data
+
+Before we start to look for some results aiming for a relation we should inspect the sleeping and stepping distribution throughout the week.
+```{r}
+weekly_step_sleep <- fitbit_merged %>%
+  mutate(days = weekdays(date))
+
+weekly_step_sleep$days <- ordered(weekly_step_sleep$days, levels=c("Monday", "Tuesday", "Wednesday", "Thursday","Friday", "Saturday", "Sunday"))
+
+weekly_step_sleep <- weekly_step_sleep %>% 
+  group_by(days) %>% 
+  summarise(avr_steps = mean(totalsteps), avr_sleep = mean(totalminutesasleep/60))
+
+head(weekly_step_sleep)
+```
+Based on this data now we can see the average steps and sleeping hours on a bar chart.
+```{r}
+ggplot(data=weekly_step_sleep, mapping = aes(x=days, y=avr_steps)) +
+  geom_bar(stat="identity")
+
+ggplot(data=weekly_step_sleep, mapping = aes(x=days, y=avr_sleep)) +
+  geom_bar(stat="identity")
+
+```
+The above tabels shows that while the users are walking the recommended amount everyday except for sunday they do not sleep the recommended amount of hours which is eight hours.
+
+#### 5.3. Avarage Sleeping Hours and Activity Level
+
+Sleeping is an important part of our lives and and it has a huge impact on both activity and energy. It is needed to be checked.
+
+```{r}
+sleep_type <- user_class %>% 
+  group_by(type) %>% 
+  summarise(average = mean(avg_sleep_hr))
+
+head(sleep_type)
+  
+```
+Here we can summarize it with a bar chart.
+```{r}
+sleep_type %>%
+  ggplot(mapping = aes(x = type, y = average, fill = type)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Average Sleeping and Activity Level")
+ggsave(filename = paste0("~/Desktop/google_case_study/visuals/", "sleep_and_type.png"))
+```
+As it can be seen through the table as well, while lightly active users are sleeping less and sedantary active users are sleeping the most, very and fairly active users are sleeping in between desirable hour values.
+
+#### 5.4. Correlations
+
+We are going to check the correlations between:
+
+* Steps and calories burned
+* Steps and sleeping hours
+* Activity level and app usage
+
+For this, first we should calculate the app usage values first and add it to the user_class table.
+```{r}
+user_class <- user_class %>% 
+  left_join(fitbit_merged %>% 
+              group_by(id) %>% 
+              summarise(days_used=sum(n())) %>% 
+              mutate(usage = case_when(
+                days_used >= 1 & days_used <= 10 ~ "low use",
+                days_used >= 11 & days_used <= 20 ~ "moderate use", 
+                days_used >= 21 & days_used <= 31 ~ "high use", 
+              )))
+
+head(user_class)
+```
+Now we have activity and app usage columns with average sleeping, walking and burned calories data all together on one table, we can conclude through the analysis of this table.
+```{r}
+cor_steps_cal <- cor(user_class$avg_steps, user_class$avg_calories)
+cor_steps_slp <- cor(user_class$avg_steps, user_class$avg_sleep_hr)
+cor_type_use <- cor(user_class$avg_steps, user_class$days_used)
+
+cor_steps_cal
+cor_steps_slp
+cor_type_use
+```
+As the correlation analysis shows there is a moderately week positive relationship (0.35) between steps taken and calories burned. This might be a mistake, therefore this must be considered as an important outcome where the developers must take a second look.
+```{r}
+user_class %>% 
+  ggplot(mapping = aes(x=avg_steps, y=avg_calories)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+For the steps taken and sleeping hours there is a strong negative relationship (-0.66) where the number of steps are increasing there is a decrease in sleeping hours.
+```{r}
+user_class %>% 
+  ggplot(mapping = aes(x=avg_steps, y=avg_sleep_hr)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+Last but not least there is a moderately week positive relationship (0,27) between the actity level and app usage, yet it is not a sufficent data for creating a data driven business decision.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+user_class %>% 
+  ggplot(mapping = aes(x=avg_steps, y=days_used)) +
+  geom_point() +
+  geom_smooth(method= "lm")
+```
+### 6. Conclusion
+
 
