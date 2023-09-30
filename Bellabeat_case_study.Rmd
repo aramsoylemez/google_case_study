@@ -1,14 +1,14 @@
-## 1.Summary
+### 1.Summary
 
 Bellabeat is high-tech company which produces smart products for health tracking use for women. They have different types of devices such as smart watches, smart bottles and so on which through the company aims to easen the burden of the daily life by tracking real life data.
 
 For this analysis we are going to focus on one of the companies products which is Bellabeat App. This app gathers data from Bellabeat products and have a great potential to improve the users experience of everyday life.
 
-## 2. Asking Phase 
+### 2. Asking Phase 
 
 We are using third part data to identify the trends in similar use of smart devices.
 
-## 3. Preparing Phase
+### 3. Preparing Phase
 
 #### 3.1. About Data 
 
@@ -18,7 +18,7 @@ We are using FitBit Fitness Tracker Data. The data is stored on Kaggle and provi
 
 The dataset that we are using consists of 18 CSV file which covers 30 users daily and hourly activities over two months. As the dataset only covers 30 users data it might have sampling bias, some tables such as the one on weight data only contains 8 users data. Therefore we can conclude that some of the tables are not very helpful in a strong analysis process. Laslty, the data was collected only in between two months which is also can be considered as quite limited.
 
-## 4. Processing Phase
+### 4. Processing Phase
 
 For all the steps in this procejt I used R, both for data analysis and for data visualisation.
 
@@ -89,9 +89,10 @@ sum(duplicated(daily_calorie))
 sum(duplicated(daily_step))
 sum(duplicated(daily_sleep))
 ```
-It looks like we only have 3 duplicates in sleep table. As we are going to remove all the duplicates and missing data we can write a simple function to do all these for us.
+It looks like we only have 3 duplicates in sleep table. As we are going to remove all the duplicates and missing data we can write a simple function to do all these for us. I will add this function into a one final function, this is just for showing purposes.
+
 ```{r}
-data_fixer <- function(data) {
+data_fiixer <- function(data) {
   # remove the missing data
   data <- na.omit(data)
   
@@ -100,46 +101,35 @@ data_fixer <- function(data) {
   
   return(data)
 }
-
-data_fixer(daily_sleep)
-data_fixer(daily_activity)
-data_fixer(daily_step)
-data_fixer(daily_calorie)
-
 ```
 ##### 4.4.3. Cleaning Names and Rename Columns
 
 For the sake of the analysis we should standardize the names and the columns so the for the analysis phase we can increase the comfort.
 
-As we are going to apply the same process for all the tables we can write another function to ease and fasten our job.
+As we are going to apply the same process for all the tables we can write another function to ease and fasten our job. For this we can write a total function which can handle both the renaming and time adjusting tasks.
+
+##### 4.4.4. Consistency of Time Frame
+
+We are going to merge all the data based on both Id and Time data therefore we require our data to be consistent in both cases.
+
+We can again write a function to secure the consistency of our data. To fasten the process I have joined all the functions together. Which is better in terms of time control and ram and cpu usage as well.
 ```{r}
-data_renamer <- function(data) {
+
+  #As Sleep table includes hours and seconds which we do not need for this analysis we should fix it first.
+daily_sleep$SleepDay <- substr(daily_sleep$SleepDay, 1, regexpr(" ", daily_sleep$SleepDay) - 1)
+
+data_fixer <- function(data) {
+  
+  # Remove duplicates and missing data
+  data <- data %>%
+    distinct() %>%
+    drop_na()
   
   # Cleaning Names
   clean_names(data)
   
   # Renaming Columns
   data <- rename_with(data, tolower)
-  
-  return(data)
-}
-
-data_renamer(daily_activity)
-data_renamer(daily_calorie)
-data_renamer(daily_sleep)
-data_renamer(daily_step)
-```
-##### 4.4.4. Consistency of Time Frame
-
-We are going to merge all the data based on both Id and Time data therefore we require our data to be consistent in both cases.
-
-We can again write a function to secure the consistency of our data.
-```{r}
-
-  #As Sleep table includes hours and seconds which we do not need for this analysis we should fix it first.
-daily_sleep$SleepDay <- substr(daily_sleep$SleepDay, 1, regexpr(" ", daily_sleep$SleepDay) - 1)
-
-date_cons <- function(data) {
   
   # All the time data is stored in the second column. The name of the second column
   col_name <- colnames(data)[2]
@@ -148,13 +138,44 @@ date_cons <- function(data) {
   data <- data %>% 
     rename(date = col_name) %>% 
     mutate(date = as_date(date, format = "%m/%d/%Y"))
+  
+  return(data)
 }
 
-date_cons(daily_activity)
-date_cons(daily_calorie)
-date_cons(daily_sleep)
-date_cons(daily_step)
+daily_activity <- data_fixer(daily_activity)
+daily_calorie <- data_fixer(daily_calorie)
+daily_sleep <- data_fixer(daily_sleep)
+daily_step <- data_fixer(daily_step)
 ```
 
+Before we join the datasets lets have look at them to soo if there is any problem.
+```{r}
+glimpse(c(daily_activity, daily_calorie, daily_sleep, daily_step))
+```
+It looks fine, so we can proceed for the next phase. However, it looks like we already have the calorie information in activity table as we do not need the daily_calories table we can leave it out.
 
+#### 4.4.5. Joining Datasets
+
+We are going to merge daily_activity, daily_calories and daily_sleep data by the id and the date variables. The aim of this move is to be able to look for relationship between the variables.
+
+```{r}
+fitbit_merged <- daily_activity %>% 
+  left_join(daily_sleep, by=c("id", "date")) %>% 
+  drop_na()
+
+glimpse(fitbit_merged)
+```
+The reason why we used drop_na() function again is because after using left_join() function R adds the second table to the first one, as the number of users does not match in both table there happens to be some missing data points. Due to my needs for activity data to be on the beginning of the table I decided to write the code in this way, otherwise we could have just changed the order of the tables, meaning we could have written the code in this way:
+```{r}
+# fitbit_merged <- daily_sleep %>% 
+#  left_join(daily_activity, by=c("id", "date"))
+```
+
+### 5. Analyzing and Sharing Phase
+
+We will conduct the analysis of the tables to determine the trends and decide if the results can lead to a profitable decisions.
+
+#### 5.1. Seperating the Users into Groups by Their Activity Level
+
+Since the demographic data which could have been useful during the analysis is not reachable we neet a standing point for the rest of the analysis
 

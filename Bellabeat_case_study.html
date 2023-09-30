@@ -352,8 +352,8 @@ display: none;
 </div>
 
 
-<div id="summary" class="section level2">
-<h2>1.Summary</h2>
+<div id="summary" class="section level3">
+<h3>1.Summary</h3>
 <p>Bellabeat is high-tech company which produces smart products for
 health tracking use for women. They have different types of devices such
 as smart watches, smart bottles and so on which through the company aims
@@ -363,13 +363,13 @@ products which is Bellabeat App. This app gathers data from Bellabeat
 products and have a great potential to improve the users experience of
 everyday life.</p>
 </div>
-<div id="asking-phase" class="section level2">
-<h2>2. Asking Phase</h2>
+<div id="asking-phase" class="section level3">
+<h3>2. Asking Phase</h3>
 <p>We are using third part data to identify the trends in similar use of
 smart devices.</p>
 </div>
-<div id="preparing-phase" class="section level2">
-<h2>3. Preparing Phase</h2>
+<div id="preparing-phase" class="section level3">
+<h3>3. Preparing Phase</h3>
 <div id="about-data" class="section level4">
 <h4>3.1. About Data</h4>
 <p>We are using FitBit Fitness Tracker Data. The data is stored on
@@ -389,8 +389,8 @@ analysis process. Laslty, the data was collected only in between two
 months which is also can be considered as quite limited.</p>
 </div>
 </div>
-<div id="processing-phase" class="section level2">
-<h2>4. Processing Phase</h2>
+<div id="processing-phase" class="section level3">
+<h3>4. Processing Phase</h3>
 <p>For all the steps in this procejt I used R, both for data analysis
 and for data visualisation.</p>
 <div id="pacgages-used" class="section level4">
@@ -626,8 +626,9 @@ well.</p>
 <pre><code>## [1] 3</code></pre>
 <p>It looks like we only have 3 duplicates in sleep table. As we are
 going to remove all the duplicates and missing data we can write a
-simple function to do all these for us.</p>
-<pre class="r"><code>data_fixer &lt;- function(data) {
+simple function to do all these for us. I will add this function into a
+one final function, this is just for showing purposes.</p>
+<pre class="r"><code>data_fiixer &lt;- function(data) {
   # remove the missing data
   data &lt;- na.omit(data)
   
@@ -635,167 +636,39 @@ simple function to do all these for us.</p>
   data &lt;- distinct(data)
   
   return(data)
-}
-
-data_fixer(daily_sleep)</code></pre>
-<pre><code>## # A tibble: 410 × 5
-##            Id SleepDay       TotalSleepRecords TotalMinutesAsleep TotalTimeInBed
-##         &lt;dbl&gt; &lt;chr&gt;                      &lt;dbl&gt;              &lt;dbl&gt;          &lt;dbl&gt;
-##  1 1503960366 4/12/2016 12:…                 1                327            346
-##  2 1503960366 4/13/2016 12:…                 2                384            407
-##  3 1503960366 4/15/2016 12:…                 1                412            442
-##  4 1503960366 4/16/2016 12:…                 2                340            367
-##  5 1503960366 4/17/2016 12:…                 1                700            712
-##  6 1503960366 4/19/2016 12:…                 1                304            320
-##  7 1503960366 4/20/2016 12:…                 1                360            377
-##  8 1503960366 4/21/2016 12:…                 1                325            364
-##  9 1503960366 4/23/2016 12:…                 1                361            384
-## 10 1503960366 4/24/2016 12:…                 1                430            449
-## # ℹ 400 more rows</code></pre>
-<pre class="r"><code>data_fixer(daily_activity)</code></pre>
-<pre><code>## # A tibble: 940 × 15
-##            Id ActivityDate TotalSteps TotalDistance TrackerDistance
-##         &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;         &lt;dbl&gt;           &lt;dbl&gt;
-##  1 1503960366 4/12/2016         13162          8.5             8.5 
-##  2 1503960366 4/13/2016         10735          6.97            6.97
-##  3 1503960366 4/14/2016         10460          6.74            6.74
-##  4 1503960366 4/15/2016          9762          6.28            6.28
-##  5 1503960366 4/16/2016         12669          8.16            8.16
-##  6 1503960366 4/17/2016          9705          6.48            6.48
-##  7 1503960366 4/18/2016         13019          8.59            8.59
-##  8 1503960366 4/19/2016         15506          9.88            9.88
-##  9 1503960366 4/20/2016         10544          6.68            6.68
-## 10 1503960366 4/21/2016          9819          6.34            6.34
-## # ℹ 930 more rows
-## # ℹ 10 more variables: LoggedActivitiesDistance &lt;dbl&gt;,
-## #   VeryActiveDistance &lt;dbl&gt;, ModeratelyActiveDistance &lt;dbl&gt;,
-## #   LightActiveDistance &lt;dbl&gt;, SedentaryActiveDistance &lt;dbl&gt;,
-## #   VeryActiveMinutes &lt;dbl&gt;, FairlyActiveMinutes &lt;dbl&gt;,
-## #   LightlyActiveMinutes &lt;dbl&gt;, SedentaryMinutes &lt;dbl&gt;, Calories &lt;dbl&gt;</code></pre>
-<pre class="r"><code>data_fixer(daily_step)</code></pre>
-<pre><code>## # A tibble: 940 × 3
-##            Id ActivityDay StepTotal
-##         &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;
-##  1 1503960366 4/12/2016       13162
-##  2 1503960366 4/13/2016       10735
-##  3 1503960366 4/14/2016       10460
-##  4 1503960366 4/15/2016        9762
-##  5 1503960366 4/16/2016       12669
-##  6 1503960366 4/17/2016        9705
-##  7 1503960366 4/18/2016       13019
-##  8 1503960366 4/19/2016       15506
-##  9 1503960366 4/20/2016       10544
-## 10 1503960366 4/21/2016        9819
-## # ℹ 930 more rows</code></pre>
-<pre class="r"><code>data_fixer(daily_calorie)</code></pre>
-<pre><code>## # A tibble: 940 × 3
-##            Id ActivityDay Calories
-##         &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 1503960366 4/12/2016       1985
-##  2 1503960366 4/13/2016       1797
-##  3 1503960366 4/14/2016       1776
-##  4 1503960366 4/15/2016       1745
-##  5 1503960366 4/16/2016       1863
-##  6 1503960366 4/17/2016       1728
-##  7 1503960366 4/18/2016       1921
-##  8 1503960366 4/19/2016       2035
-##  9 1503960366 4/20/2016       1786
-## 10 1503960366 4/21/2016       1775
-## # ℹ 930 more rows</code></pre>
+}</code></pre>
 </div>
 <div id="cleaning-names-and-rename-columns" class="section level5">
 <h5>4.4.3. Cleaning Names and Rename Columns</h5>
 <p>For the sake of the analysis we should standardize the names and the
 columns so the for the analysis phase we can increase the comfort.</p>
 <p>As we are going to apply the same process for all the tables we can
-write another function to ease and fasten our job.</p>
-<pre class="r"><code>data_renamer &lt;- function(data) {
+write another function to ease and fasten our job. For this we can write
+a total function which can handle both the renaming and time adjusting
+tasks.</p>
+</div>
+<div id="consistency-of-time-frame" class="section level5">
+<h5>4.4.4. Consistency of Time Frame</h5>
+<p>We are going to merge all the data based on both Id and Time data
+therefore we require our data to be consistent in both cases.</p>
+<p>We can again write a function to secure the consistency of our data.
+To fasten the process I have joined all the functions together. Which is
+better in terms of time control and ram and cpu usage as well.</p>
+<pre class="r"><code>  #As Sleep table includes hours and seconds which we do not need for this analysis we should fix it first.
+daily_sleep$SleepDay &lt;- substr(daily_sleep$SleepDay, 1, regexpr(&quot; &quot;, daily_sleep$SleepDay) - 1)
+
+data_fixer &lt;- function(data) {
+  
+  # Remove duplicates and missing data
+  data &lt;- data %&gt;%
+    distinct() %&gt;%
+    drop_na()
   
   # Cleaning Names
   clean_names(data)
   
   # Renaming Columns
   data &lt;- rename_with(data, tolower)
-  
-  return(data)
-}
-
-data_renamer(daily_activity)</code></pre>
-<pre><code>## # A tibble: 940 × 15
-##            id activitydate totalsteps totaldistance trackerdistance
-##         &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;         &lt;dbl&gt;           &lt;dbl&gt;
-##  1 1503960366 4/12/2016         13162          8.5             8.5 
-##  2 1503960366 4/13/2016         10735          6.97            6.97
-##  3 1503960366 4/14/2016         10460          6.74            6.74
-##  4 1503960366 4/15/2016          9762          6.28            6.28
-##  5 1503960366 4/16/2016         12669          8.16            8.16
-##  6 1503960366 4/17/2016          9705          6.48            6.48
-##  7 1503960366 4/18/2016         13019          8.59            8.59
-##  8 1503960366 4/19/2016         15506          9.88            9.88
-##  9 1503960366 4/20/2016         10544          6.68            6.68
-## 10 1503960366 4/21/2016          9819          6.34            6.34
-## # ℹ 930 more rows
-## # ℹ 10 more variables: loggedactivitiesdistance &lt;dbl&gt;,
-## #   veryactivedistance &lt;dbl&gt;, moderatelyactivedistance &lt;dbl&gt;,
-## #   lightactivedistance &lt;dbl&gt;, sedentaryactivedistance &lt;dbl&gt;,
-## #   veryactiveminutes &lt;dbl&gt;, fairlyactiveminutes &lt;dbl&gt;,
-## #   lightlyactiveminutes &lt;dbl&gt;, sedentaryminutes &lt;dbl&gt;, calories &lt;dbl&gt;</code></pre>
-<pre class="r"><code>data_renamer(daily_calorie)</code></pre>
-<pre><code>## # A tibble: 940 × 3
-##            id activityday calories
-##         &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 1503960366 4/12/2016       1985
-##  2 1503960366 4/13/2016       1797
-##  3 1503960366 4/14/2016       1776
-##  4 1503960366 4/15/2016       1745
-##  5 1503960366 4/16/2016       1863
-##  6 1503960366 4/17/2016       1728
-##  7 1503960366 4/18/2016       1921
-##  8 1503960366 4/19/2016       2035
-##  9 1503960366 4/20/2016       1786
-## 10 1503960366 4/21/2016       1775
-## # ℹ 930 more rows</code></pre>
-<pre class="r"><code>data_renamer(daily_sleep)</code></pre>
-<pre><code>## # A tibble: 413 × 5
-##            id sleepday       totalsleeprecords totalminutesasleep totaltimeinbed
-##         &lt;dbl&gt; &lt;chr&gt;                      &lt;dbl&gt;              &lt;dbl&gt;          &lt;dbl&gt;
-##  1 1503960366 4/12/2016 12:…                 1                327            346
-##  2 1503960366 4/13/2016 12:…                 2                384            407
-##  3 1503960366 4/15/2016 12:…                 1                412            442
-##  4 1503960366 4/16/2016 12:…                 2                340            367
-##  5 1503960366 4/17/2016 12:…                 1                700            712
-##  6 1503960366 4/19/2016 12:…                 1                304            320
-##  7 1503960366 4/20/2016 12:…                 1                360            377
-##  8 1503960366 4/21/2016 12:…                 1                325            364
-##  9 1503960366 4/23/2016 12:…                 1                361            384
-## 10 1503960366 4/24/2016 12:…                 1                430            449
-## # ℹ 403 more rows</code></pre>
-<pre class="r"><code>data_renamer(daily_step)</code></pre>
-<pre><code>## # A tibble: 940 × 3
-##            id activityday steptotal
-##         &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;
-##  1 1503960366 4/12/2016       13162
-##  2 1503960366 4/13/2016       10735
-##  3 1503960366 4/14/2016       10460
-##  4 1503960366 4/15/2016        9762
-##  5 1503960366 4/16/2016       12669
-##  6 1503960366 4/17/2016        9705
-##  7 1503960366 4/18/2016       13019
-##  8 1503960366 4/19/2016       15506
-##  9 1503960366 4/20/2016       10544
-## 10 1503960366 4/21/2016        9819
-## # ℹ 930 more rows</code></pre>
-</div>
-<div id="consistency-of-time-frame" class="section level5">
-<h5>4.4.4. Consistency of Time Frame</h5>
-<p>We are going to merge all the data based on both Id and Time data
-therefore we require our data to be consistent in both cases.</p>
-<p>We can again write a function to secure the consistency of our
-data.</p>
-<pre class="r"><code>  #As Sleep table includes hours and seconds which we do not need for this analysis we should fix it first.
-daily_sleep$SleepDay &lt;- substr(daily_sleep$SleepDay, 1, regexpr(&quot; &quot;, daily_sleep$SleepDay) - 1)
-
-date_cons &lt;- function(data) {
   
   # All the time data is stored in the second column. The name of the second column
   col_name &lt;- colnames(data)[2]
@@ -804,9 +677,11 @@ date_cons &lt;- function(data) {
   data &lt;- data %&gt;% 
     rename(date = col_name) %&gt;% 
     mutate(date = as_date(date, format = &quot;%m/%d/%Y&quot;))
+  
+  return(data)
 }
 
-date_cons(daily_activity)</code></pre>
+daily_activity &lt;- data_fixer(daily_activity)</code></pre>
 <pre><code>## Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
 ## ℹ Please use `all_of()` or `any_of()` instead.
 ##   # Was:
@@ -819,10 +694,85 @@ date_cons(daily_activity)</code></pre>
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 ## generated.</code></pre>
-<pre class="r"><code>date_cons(daily_calorie)
-date_cons(daily_sleep)
-date_cons(daily_step)</code></pre>
+<pre class="r"><code>daily_calorie &lt;- data_fixer(daily_calorie)
+daily_sleep &lt;- data_fixer(daily_sleep)
+daily_step &lt;- data_fixer(daily_step)</code></pre>
+<p>Before we join the datasets lets have look at them to soo if there is
+any problem.</p>
+<pre class="r"><code>glimpse(c(daily_activity, daily_calorie, daily_sleep, daily_step))</code></pre>
+<pre><code>## List of 26
+##  $ id                      : num [1:940] 1.5e+09 1.5e+09 1.5e+09 1.5e+09 1.5e+09 ...
+##  $ date                    : Date[1:940], format: &quot;2016-04-12&quot; &quot;2016-04-13&quot; ...
+##  $ totalsteps              : num [1:940] 13162 10735 10460 9762 12669 ...
+##  $ totaldistance           : num [1:940] 8.5 6.97 6.74 6.28 8.16 ...
+##  $ trackerdistance         : num [1:940] 8.5 6.97 6.74 6.28 8.16 ...
+##  $ loggedactivitiesdistance: num [1:940] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ veryactivedistance      : num [1:940] 1.88 1.57 2.44 2.14 2.71 ...
+##  $ moderatelyactivedistance: num [1:940] 0.55 0.69 0.4 1.26 0.41 ...
+##  $ lightactivedistance     : num [1:940] 6.06 4.71 3.91 2.83 5.04 ...
+##  $ sedentaryactivedistance : num [1:940] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ veryactiveminutes       : num [1:940] 25 21 30 29 36 38 42 50 28 19 ...
+##  $ fairlyactiveminutes     : num [1:940] 13 19 11 34 10 20 16 31 12 8 ...
+##  $ lightlyactiveminutes    : num [1:940] 328 217 181 209 221 164 233 264 205 211 ...
+##  $ sedentaryminutes        : num [1:940] 728 776 1218 726 773 ...
+##  $ calories                : num [1:940] 1985 1797 1776 1745 1863 ...
+##  $ id                      : num [1:940] 1.5e+09 1.5e+09 1.5e+09 1.5e+09 1.5e+09 ...
+##  $ date                    : Date[1:940], format: &quot;2016-04-12&quot; &quot;2016-04-13&quot; ...
+##  $ calories                : num [1:940] 1985 1797 1776 1745 1863 ...
+##  $ id                      : num [1:410] 1.5e+09 1.5e+09 1.5e+09 1.5e+09 1.5e+09 ...
+##  $ date                    : Date[1:410], format: &quot;2016-04-12&quot; &quot;2016-04-13&quot; ...
+##  $ totalsleeprecords       : num [1:410] 1 2 1 2 1 1 1 1 1 1 ...
+##  $ totalminutesasleep      : num [1:410] 327 384 412 340 700 304 360 325 361 430 ...
+##  $ totaltimeinbed          : num [1:410] 346 407 442 367 712 320 377 364 384 449 ...
+##  $ id                      : num [1:940] 1.5e+09 1.5e+09 1.5e+09 1.5e+09 1.5e+09 ...
+##  $ date                    : Date[1:940], format: &quot;2016-04-12&quot; &quot;2016-04-13&quot; ...
+##  $ steptotal               : num [1:940] 13162 10735 10460 9762 12669 ...</code></pre>
+<p>It looks fine, so we can proceed for the next phase. However, it
+looks like we already have the calorie information in activity table as
+we do not need the daily_calories table we can leave it out.</p>
 </div>
+</div>
+<div id="joining-datasets" class="section level4">
+<h4>4.4.5. Joining Datasets</h4>
+<p>We are going to merge daily_activity, daily_calories and daily_sleep
+data by the id and the date variables. The aim of this move is to be
+able to look for relationship between the variables.</p>
+<pre class="r"><code>fitbit_merged &lt;- daily_activity %&gt;% 
+  left_join(daily_sleep, by=c(&quot;id&quot;, &quot;date&quot;)) %&gt;% 
+  drop_na()
+
+glimpse(fitbit_merged)</code></pre>
+<pre><code>## Rows: 410
+## Columns: 18
+## $ id                       &lt;dbl&gt; 1503960366, 1503960366, 1503960366, 150396036…
+## $ date                     &lt;date&gt; 2016-04-12, 2016-04-13, 2016-04-15, 2016-04-…
+## $ totalsteps               &lt;dbl&gt; 13162, 10735, 9762, 12669, 9705, 15506, 10544…
+## $ totaldistance            &lt;dbl&gt; 8.50, 6.97, 6.28, 8.16, 6.48, 9.88, 6.68, 6.3…
+## $ trackerdistance          &lt;dbl&gt; 8.50, 6.97, 6.28, 8.16, 6.48, 9.88, 6.68, 6.3…
+## $ loggedactivitiesdistance &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+## $ veryactivedistance       &lt;dbl&gt; 1.88, 1.57, 2.14, 2.71, 3.19, 3.53, 1.96, 1.3…
+## $ moderatelyactivedistance &lt;dbl&gt; 0.55, 0.69, 1.26, 0.41, 0.78, 1.32, 0.48, 0.3…
+## $ lightactivedistance      &lt;dbl&gt; 6.06, 4.71, 2.83, 5.04, 2.51, 5.03, 4.24, 4.6…
+## $ sedentaryactivedistance  &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+## $ veryactiveminutes        &lt;dbl&gt; 25, 21, 29, 36, 38, 50, 28, 19, 41, 39, 73, 3…
+## $ fairlyactiveminutes      &lt;dbl&gt; 13, 19, 34, 10, 20, 31, 12, 8, 21, 5, 14, 23,…
+## $ lightlyactiveminutes     &lt;dbl&gt; 328, 217, 209, 221, 164, 264, 205, 211, 262, …
+## $ sedentaryminutes         &lt;dbl&gt; 728, 776, 726, 773, 539, 775, 818, 838, 732, …
+## $ calories                 &lt;dbl&gt; 1985, 1797, 1745, 1863, 1728, 2035, 1786, 177…
+## $ totalsleeprecords        &lt;dbl&gt; 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ totalminutesasleep       &lt;dbl&gt; 327, 384, 412, 340, 700, 304, 360, 325, 361, …
+## $ totaltimeinbed           &lt;dbl&gt; 346, 407, 442, 367, 712, 320, 377, 364, 384, …</code></pre>
+</div>
+</div>
+<div id="analyzing-and-sharing-phase" class="section level3">
+<h3>5. Analyzing and Sharing Phase</h3>
+<p>We will conduct the analysis of the tables to determine the trends
+and decide if the results can lead to a profitable decisions.</p>
+<div id="seperating-the-users-into-groups-by-their-activity-level" class="section level4">
+<h4>5.1. Seperating the Users into Groups by Their Activity Level</h4>
+<p>Since the demographic data which could have been useful during the
+analysis is not reachable we neet a standing point for the rest of the
+analysis</p>
 </div>
 </div>
 
