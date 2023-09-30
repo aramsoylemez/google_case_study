@@ -351,6 +351,7 @@ user_class %>%
   geom_point() +
   geom_smooth(method= "lm")
 ```
+
 ### 6. Conclusion
 
 
