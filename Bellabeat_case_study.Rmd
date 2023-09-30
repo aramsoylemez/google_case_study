@@ -1,3 +1,9 @@
+---
+title: "Bellabeat Case Study"
+author: Aram Soylemez
+output: md_document
+---
+
 ### 1.Summary
 
 Bellabeat is high-tech company which produces smart products for health tracking use for women. They have different types of devices such as smart watches, smart bottles and so on which through the company aims to easen the burden of the daily life by tracking real life data.
