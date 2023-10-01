@@ -51,27 +51,8 @@ For this project beside the base pachage I used these packages:
 <!-- -->
 
     library(tidyverse)
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.3     ✔ readr     2.1.4
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-    ## ✔ purrr     1.0.2     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
     library(lubridate)
     library(janitor)
-
-    ## 
-    ## Attaching package: 'janitor'
-    ## 
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     chisq.test, fisher.test
 
 #### 4.2. Importing Tables
 
@@ -580,7 +561,7 @@ We can see this by creating a pie chart:
       geom_text(aes(label = paste0(percentage,"%")),
                 position = position_stack(vjust = 0.5))
 
-![](Bellabeat_case_study_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
     ggsave(filename = paste0("~/Desktop/google_case_study/visuals/", "dist_of_users.png"))
 
@@ -618,13 +599,13 @@ on a bar chart.
     ggplot(data=weekly_step_sleep, mapping = aes(x=days, y=avr_steps)) +
       geom_bar(stat="identity")
 
-![](Bellabeat_case_study_files/figure-markdown_strict/unnamed-chunk-16-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-16-1.png)
 
     ggplot(data=weekly_step_sleep, mapping = aes(x=days, y=avr_sleep)) +
       geom_bar(stat="identity")
 
-![](Bellabeat_case_study_files/figure-markdown_strict/unnamed-chunk-16-2.png)
-The above tabels shows that while the users are walking the recommended
+![](README_files/figure-markdown_strict/unnamed-chunk-16-2.png) The
+above tabels shows that while the users are walking the recommended
 amount everyday except for sunday they do not sleep the recommended
 amount of hours which is eight hours.
 
@@ -654,7 +635,7 @@ Here we can summarize it with a bar chart.
       geom_bar(stat = "identity") +
       labs(title = "Average Sleeping and Activity Level")
 
-![](Bellabeat_case_study_files/figure-markdown_strict/unnamed-chunk-18-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-18-1.png)
 
     ggsave(filename = paste0("~/Desktop/google_case_study/visuals/", "sleep_and_type.png"))
 
@@ -731,7 +712,7 @@ where the developers must take a second look.
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
-![](Bellabeat_case_study_files/figure-markdown_strict/unnamed-chunk-21-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-21-1.png)
 
 For the steps taken and sleeping hours there is a strong negative
 relationship (-0.66) where the number of steps are increasing there is a
@@ -744,7 +725,7 @@ decrease in sleeping hours.
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
-![](Bellabeat_case_study_files/figure-markdown_strict/unnamed-chunk-22-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-22-1.png)
 
 Last but not least there is a moderately week positive relationship
 (0,27) between the actity level and app usage, yet it is not a sufficent
@@ -755,5 +736,28 @@ data for creating a data driven business decision.
       geom_point() +
       geom_smooth(method= "lm")
 
-![](Bellabeat_case_study_files/figure-markdown_strict/unnamed-chunk-23-1.png)
-\### 6. Conclusion
+![](README_files/figure-markdown_strict/unnamed-chunk-23-1.png) Now the
+previous phases are done we can continue with the conclusion.
+
+### 6. Conclusion
+
+Bellabeat’s aim is to empower women by increasing the daily life
+experience through their smart devices.
+
+As for this case study it can be said that the dataset was not
+sufficient enough for an overall analysis. The dataset includes 33 users
+data, however, when we clear the dataset and finally merge them together
+the remaining dataset consists of only 24 users data. My first and most
+useful insight would be to come up with bigger data and also it’s
+covering an entire year might be also quite usefull for answering
+business related questions.
+
+The foremost result of my analysis is showing that the people who uses
+the app more frequently are showing better results in daily activity,
+calories burned and sleeping hours. Therefore the main point to be
+worked on must be over increasing the average app usage.
+
+For this we might apply: \* Giving feedback for activities on a daily,
+weekly and monthly basis. \* Sending notifications over recommended and
+aimed activities. \* Creating a competing environment might motivate the
+users. \* Making the app more fun.

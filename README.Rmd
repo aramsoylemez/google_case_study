@@ -36,7 +36,7 @@ For this project beside the base pachage I used these packages:
 * lubridate
 * janitor
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(lubridate)
 library(janitor)
@@ -351,7 +351,20 @@ user_class %>%
   geom_point() +
   geom_smooth(method= "lm")
 ```
+Now the previous phases are done we can continue with the conclusion.
 
 ### 6. Conclusion
+
+Bellabeat's aim is to empower women by increasing the daily life experience through their smart devices.
+
+As for this case study it can be said that the dataset was not sufficient enough for an overall analysis. The dataset includes 33 users data, however, when we clear the dataset and finally merge them together the remaining dataset consists of only 24 users data. My first and most useful insight would be to come up with bigger data and also it's covering an entire year might be also quite usefull for answering business related questions.
+
+The foremost result of my analysis is showing that the people who uses the app more frequently are showing better results in daily activity, calories burned and sleeping hours. Therefore the main point to be worked on must be over increasing the average app usage.
+
+For this we might apply:
+* Giving feedback for activities on a daily, weekly and monthly basis.
+* Sending notifications over recommended and aimed activities.
+* Creating a competing environment might motivate the users.
+* Making the app more fun.
 
 
